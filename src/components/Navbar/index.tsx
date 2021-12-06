@@ -3,12 +3,11 @@ import Title from './Title'
 import Filters from './Filters'
 
 const Nav = styled.div`
-  width: 90%;
-  max-width: 1300px;
   height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: 45px;
   & > div {
     display: flex;
     justify-content: space-between;
