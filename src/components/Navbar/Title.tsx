@@ -3,6 +3,9 @@ import ThemeSwitcher from './ThemeSwitcher'
 
 const Container = styled.div`
   background: var(--main-elements-color);
+  @media(max-width:875px){
+    h2{ font-size: .9rem; }
+  })
 `
 const Title = () => {
   return <Container>

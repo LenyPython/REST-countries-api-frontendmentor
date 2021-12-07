@@ -8,9 +8,13 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   font-weight: 600;
+  cursor: pointer;
   * {
     margin: auto .4em;
     }
+  @media(max-width: 875px){
+    font-size: .9rem;
+  }
 `
 
 const ThemeSwitcher = () => {
