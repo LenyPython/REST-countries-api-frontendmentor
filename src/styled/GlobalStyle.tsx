@@ -10,7 +10,11 @@ const GlobalStyle = createGlobalStyle<Props>`
   --main-text-color:  ${ ({mode}) =>  mode? 'hsl(0, 0%, 100%)':'hsl(200, 15%, 8%)'};
   --main-elements-color:  ${ ({mode}) =>  mode? 'hsl(209, 23%, 22%)':'hsl(0, 0%, 100%)'};
   --main-input-color: ${ ({mode}) =>  mode? 'hsl(0, 0%, 100%)':'hsl(0, 0%, 52%)'};
+  --content-horizontal-offset: 50px;
   font-family: 'Nunito Sans', sans-serif;
+  @media(max-width: 875px){
+    --content-horizontal-offset: 15px;
+  }
 }
 
 * {
