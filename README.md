@@ -9,10 +9,7 @@ This is a solution to the [REST Countries API with color theme switcher challeng
 - [My process](#my-process)
   - [Built with](#built-with)
   - [What I learned](#what-i-learned)
-  - [Continued development](#continued-development)
-  - [Useful resources](#useful-resources)
 - [Author](#author)
-- [Acknowledgments](#acknowledgments)
 
 
 ## Overview
@@ -28,8 +25,6 @@ Users should be able to:
 - Click through to the border countries on the detail page
 - Toggle the color scheme between light and dark mode *(optional)*
 
-## My process
-
 ### Built with
 
 - Semantic HTML5 markup
@@ -37,48 +32,136 @@ Users should be able to:
 - Flexbox
 - CSS Grid
 - [React](https://reactjs.org/) - JS library
+- [Redux](https://redux.js.org/)
+- [Redux-saga](https://redux-saga.js.org/)
 - [Styled Components](https://styled-components.com/) - For styles
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
+Practiced fetching data from API.
+Practiced TS.
+RWD.
 
-To see how you can add code snippets, see below:
-
-```html
-<h1>Some HTML code I'm proud of</h1>
-```
 ```css
-.proud-of-this-css {
-  color: papayawhip;
-}
+:root {
+  --main-background-color: ${ ({mode}) =>  mode? 'hsl(207, 26%, 17%)':'hsl(0, 0%, 98%)'};
+  --main-text-color:  ${ ({mode}) =>  mode? 'hsl(0, 0%, 100%)':'hsl(200, 15%, 8%)'};
+  --main-elements-color:  ${ ({mode}) =>  mode? 'hsl(209, 23%, 22%)':'hsl(0, 0%, 100%)'};
+  --main-input-color: ${ ({mode}) =>  mode? 'hsl(0, 0%, 100%)':'hsl(0, 0%, 52%)'};
+  --content-horizontal-offset: 50px;
+  font-family: 'Nunito Sans', sans-serif;
+  @media(max-width: 875px){
+    --content-horizontal-offset: 15px;
+  }
 ```
 ```js
-const proudOfThisFunc = () => {
-  console.log('🎉')
+interface GlobalStateInterface {
+	darkMode: boolean
+  countries: {[key:string]:CountryInterface}
+  country: CountryInterface | null
+  codeHash: {[key:string]: string}
+  filter: { region: string, name: string }
 }
+export interface CountryInterface {
+  flag: string
+  name: string
+  nativeName: string
+  topLevelDomain: string[]
+  population: number
+  region: string
+  subregion: string 
+  capital: string 
+  currencies: {'name': string}[]
+  languages: {'name': string}[]
+  borders: string[]
+  alpha3Code: string
+}
+
+const initialState: GlobalStateInterface = {
+	darkMode: false,
+  countries: {},
+  country: null,
+  codeHash: {},
+  filter: {
+    region: '',
+    name: ''
+  }
+}
+
+const GlobalState = createSlice({
+  name: 'GlobalState',
+  initialState,
+  reducers:{
+    changeMode: state => {
+      state.darkMode = !state.darkMode
+    },
+    setFilterRegion: (state, action: PayloadAction<string>) => {
+      state.filter.region = action.payload
+    },
+    setFilterName: (state, action: PayloadAction<string>) => {
+      state.filter.name = action.payload
+    },
+    setCountry: (state, action: PayloadAction<CountryInterface|null>) => {
+      state.country = action.payload
+    },
+    setCountries: (state, action: PayloadAction<CountryInterface[]>) => {
+      const DATA = action.payload.reduce((all, current)=>{
+        let { flag, name, nativeName, topLevelDomain,
+              population, region, subregion, capital, currencies,
+              languages, borders, alpha3Code } = current
+              if(!borders) borders = []
+              all.countries[name] = { flag, name, nativeName, topLevelDomain,
+              population, region, subregion, capital, currencies,
+              languages, borders, alpha3Code }
+              all.hash[alpha3Code] = name
+        return all
+      },{ countries: {} as {[key: string]: CountryInterface} , 
+          hash:{} as {[key: string]: string}
+      })
+      state.countries = DATA.countries
+      state.codeHash = DATA.hash
+    }
+  }
+})
+
+export const { 
+  changeMode,
+  setCountry,
+  setCountries,
+  setFilterName,
+  setFilterRegion,
+} = GlobalState.actions
+
+export const getGlobalMode = (state: RootState) => state.GlobalState.darkMode
+export const getCountries = (state: RootState) => state.GlobalState.countries
+export const getCountry = (state: RootState) => state.GlobalState.country
+export const getAlphaCode = (state: RootState) => state.GlobalState.codeHash
+export const getFilter = (state: RootState) => state.GlobalState.filter
+
+export default GlobalState.reducer
+
+
+//////////////////FILTERING COUNTRIES//////////////////////////////
+const CARDS = [] as JSX.Element[]
+
+for(let key in countries){
+  const item = countries[key]
+  if(filters.region && filters.region !== item.region) continue
+  if(filters.name && 
+     !item.name.toLowerCase().includes(filters.name.toLowerCase())) continue
+  CARDS.push(
+    <Card
+      key={`${item.name}`}
+      {...item}
+    />
+  )
+
+}
+
 ```
-
-
-### Continued development
-
-Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
-
-
-### Useful resources
-
-- [Example resource 1](https://www.example.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Example resource 2](https://www.example.com) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
-
-**Note: Delete this note and replace the list above with resources that helped you during the challenge. These could come in handy for anyone viewing your solution or for yourself when you look back on this project in the future.**
 
 ## Author
 
 - Website - [Piotr Lenartowicz](https://www.lenypython.github.io)
 - Frontend Mentor - [@lenypython](https://www.frontendmentor.io/profile/lenypython)
-
-
-## Acknowledgments
-
-This is where you can give a hat tip to anyone who helped you out on this project. Perhaps you worked in a team or got some inspiration from someone else's solution. This is the perfect place to give them some credit.
 
