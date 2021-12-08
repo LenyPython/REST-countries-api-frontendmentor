@@ -66,8 +66,6 @@ const GlobalState = createSlice({
       })
       state.countries = DATA.countries
       state.codeHash = DATA.hash
-      console.log(state.countries)
-      console.log(state.codeHash)
     }
   }
 })
