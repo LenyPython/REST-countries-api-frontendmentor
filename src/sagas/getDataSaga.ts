@@ -26,7 +26,6 @@ function* getDataWorker() {
 const getData = async () => {
 	const URL = 'https://restcountries.com/v2/all'
 	const data = await (await axios.get(URL)).data
-	console.log('Fetching from api')
 
 	sessionStorage.setItem(DATA_KEY, JSON.stringify(data));
 	return data

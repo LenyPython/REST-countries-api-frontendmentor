@@ -52,9 +52,10 @@ const GlobalState = createSlice({
     },
     setCountries: (state, action: PayloadAction<CountryInterface[]>) => {
       const DATA = action.payload.reduce((all, current)=>{
-        const { flag, name, nativeName, topLevelDomain,
+        let { flag, name, nativeName, topLevelDomain,
               population, region, subregion, capital, currencies,
               languages, borders, alpha3Code } = current
+              if(!borders) borders = []
               all.countries[name] = { flag, name, nativeName, topLevelDomain,
               population, region, subregion, capital, currencies,
               languages, borders, alpha3Code }
